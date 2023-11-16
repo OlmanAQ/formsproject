@@ -15,7 +15,18 @@ export default function Home() {
     }
     setFormContent([...formContent, field]);
   }
-
+  const crearDepartamento = async (form) => {
+    try {
+      console.log(db);
+      console.log(form);
+      await addDoc(collection(db, "Respuestas"), {
+        Preguntas: form.Preguntas
+      });
+      console.log("Preguntas creado y documentado en Firestore");
+    } catch (error) {
+      console.error("Error al crear Preguntas y documentar en Firestore: ", error);
+    }
+  };
   const editField = (fieldName, fieldLabel) => {
     const formFields = [...formContent];
     const fieldIndex = formFields.findIndex(f => f.name === fieldName);
@@ -84,7 +95,7 @@ export default function Home() {
                   }
                   {field.question_type == 'multichoice' &&
                     <div className='my-4 flex flex-col text-black space-y-2'>
-                      <select style="color:black"
+                      <select 
                         className='px-5 shadow-sm h-10 text-black rounded-md block w-full'>
                         {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
@@ -104,6 +115,7 @@ export default function Home() {
         <div className='relative w-full p-5'>
           <div className='absolute inset-x-0 bottom-0 h-12 flex justify-center'>
             <button onClick={() => addQuestion()} className='inline-flex bg-gray-800 hover:bg-gray-700 items-center p-3 text-sm text-white rounded-md'>Add Question</button>
+            <button onClick={() =>crearDepartamento()} className='inline-flex bg-gray-800 hover:bg-gray-700 items-center p-3 text-sm text-white rounded-md'>Terminar</button>
           </div>
         </div>
       </div>
@@ -125,15 +137,15 @@ export default function Home() {
 
                 <div className='my-4'>
                   {
-                    field.question_type == 'short_answer' && <input type="text" className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
+                    field.question_type == 'short_answer' && <input type="text" className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
                   }
                   {
-                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
+                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 text-black  rounded-md block w-full" placeholder={field.label} />
                   }
                   {
                     field.question_type == 'multichoice' &&
                     <select
-                      className='px-5 shadow-sm h-10 rounded-md block w-full'>
+                      className='px-5 shadow-sm h-10 rounded-md text-black block w-full'>
                       {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
                     </select>
                   }
