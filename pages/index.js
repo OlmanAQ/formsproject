@@ -1,13 +1,17 @@
 import React, { useState, } from 'react'
+import appFirebase from "../firebase/api";
+import { getFirestore, addDoc, collection, query, where, getDocs } from "firebase/firestore";
+
+
 
 export default function Home() {
   const [formContent, setFormContent] = useState([]);
   const [onEdit, setOnEdit] = useState(false);
   const [textField, setTextField] = useState("");
   const [editedField, setEditedField] = useState("");
-  let id = 0;
-  let objects = [];
+  const db = getFirestore(appFirebase);
   let preguntas = [];
+  let encontrado = "";
 
 
   const addQuestion = () => {
@@ -36,35 +40,41 @@ export default function Home() {
       id++;
     });
     console.log(preguntas);
+    agregarbd(preguntas);
 
-    return preguntas;
+
   }
-  const crearPreguntas = async (form) => {
-    try {
-      let id = 0;
-      formContent.forEach(field => {
-        let pregunta = {};
-        pregunta.id = id;
-        pregunta.tipo = field.question_type;
-        pregunta.nombre = field.label;
-        if (field.question_type === 'multichoice') {
-          pregunta.opciones = field.list;
-        }
-        preguntas.push(pregunta);
-        id++;
-      });
-      console.log(preguntas);
-  
+  const agregarbd = async (form) => {
+    try {  
       console.log(db);
       console.log(form);
       await addDoc(collection(db, "Respuestas"), {
-        Preguntas: form.Preguntas
+        preguntas: form
       });
       console.log("Preguntas creado y documentado en Firestore");
+      findId();
     } catch (error) {
       console.error("Error al crear Preguntas y documentar en Firestore: ", error);
     }
   };
+
+  //encontrar el id en el firestore
+
+  const findId = async () => {
+    const q = query(collection(db, "Respuestas"), where("preguntas", "==", preguntas));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      encontrado =  doc.id;
+    });
+    console.log("check ",encontrado);
+  }
+
+
+
+  
   const editField = (fieldName, fieldLabel) => {
     const formFields = [...formContent];
     const fieldIndex = formFields.findIndex(f => f.name === fieldName);
@@ -181,3 +191,4 @@ export default function Home() {
     </div>
   )
 }
+export let encontrado;

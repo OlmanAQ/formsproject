@@ -1,4 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import appFirebase from "../firebase/api";
+import { encontrado } from './index.js';
+import { getFirestore, doc, getDoc, query } from "firebase/firestore";
+
+
 
 
 const camelize = (str) => {
@@ -8,32 +13,31 @@ const camelize = (str) => {
     });
 };
 
+
+
 const Submit = () => {
-    const [formContent, setFormContent] = useState([{
-        id: 0,
-        name: "0",
-        label: "what is your name ?",
-        required: false,
-        question_type: "short_answer",
-        list: []
-    },
-    {
-        id: 1,
-        name: "1",
-        label: "Describe yourself ?",
-        required: false,
-        question_type: "paragraph",
-        list: []
-    },
-    {
-        id: 2,
-        name: "2",
-        label: "what is your favorite color ?",
-        required: false,
-        question_type: "multichoice",
-        list: ["Red", "Green", "Blue"]
-    }
+    useEffect(() => {
+        getDocument(encontrado);
+    },)
+    const db = getFirestore();
+    
+    const [formContent, setFormContent] = useState([
+
     ]);
+
+    
+    const getDocument = async (encontrado) => {
+        console.log(encontrado);
+        const docRef = doc(db, "Respuestas", encontrado);
+        const docSnap = await getDoc(docRef);
+    
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            setFormContent(docSnap.data().preguntas);
+        } else {
+            console.log("No such document!");
+        }
+    }
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -62,25 +66,25 @@ const Submit = () => {
                     return (
                         <div key={field.id} className="rounded-md bg-white flex flex-col px-4 w-full shadow-md">
                             <div className='flex justify-between items-center space-y-2'>
-                                <div key={field.name} className="block text-sm font-medium text-gray-700 capitalize">
-                                    <label >{field.label}</label>
+                                <div key={field.nombre} className="block text-sm font-medium text-gray-700 capitalize">
+                                    <label >{field.nombre}</label>
                                 </div>
 
                             </div>
 
                             <div className='my-4'>
                                 {
-                                    field.question_type == 'short_answer' && <input type="text" className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.label} name={camelize(field.label)} />
+                                    field.tipo == 'short_answer' && <input type="text" className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.nombre} name={camelize(field.nombre)} />
                                 }
                                 {
-                                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.label} name={camelize(field.label)} />
+                                    field.tipo == 'paragraph' && <textarea rows={4} className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.nombre} name={camelize(field.nombre)} />
                                 }
                                 {
-                                    field.question_type == 'multichoice' &&
+                                    field.tipo == 'multichoice' &&
                                     <select
-                                        name={camelize(field.label)}
+                                        name={camelize(field.nombre)}
                                         className='px-5 shadow-sm h-10 rounded-md text-black block w-full'>
-                                        {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
+                                        {field.opciones.map((item) => <option key={item} value={item}>{item}</option>)}
                                     </select>
                                 }
                             </div>
