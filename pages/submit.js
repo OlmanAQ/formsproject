@@ -63,23 +63,23 @@ const Submit = () => {
                         <div key={field.id} className="rounded-md bg-white flex flex-col px-4 w-full shadow-md">
                             <div className='flex justify-between items-center space-y-2'>
                                 <div key={field.name} className="block text-sm font-medium text-gray-700 capitalize">
-                                    <label onClick={() => setOnEdit(true)}>{field.label}</label>
+                                    <label >{field.label}</label>
                                 </div>
 
                             </div>
 
                             <div className='my-4'>
                                 {
-                                    field.question_type == 'short_answer' && <input type="text" className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} name={camelize(field.label)} />
+                                    field.question_type == 'short_answer' && <input type="text" className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.label} name={camelize(field.label)} />
                                 }
                                 {
-                                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} name={camelize(field.label)} />
+                                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.label} name={camelize(field.label)} />
                                 }
                                 {
                                     field.question_type == 'multichoice' &&
                                     <select
                                         name={camelize(field.label)}
-                                        className='px-5 shadow-sm h-10 rounded-md block w-full'>
+                                        className='px-5 shadow-sm h-10 rounded-md text-black block w-full'>
                                         {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
                                     </select>
                                 }

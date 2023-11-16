@@ -67,7 +67,7 @@ export default function Home() {
                    }
                   </div>
                   <div>
-                    <select onChange={(e) => editFieldType(field.name, e.target.value)}>
+                    <select className='text-black' onChange={(e) => editFieldType(field.name, e.target.value)} >
                       <option value="short_answer">Short Answer</option>
                       <option value="paragraph">Paragraph</option>
                       <option value="multichoice">Multichoice</option>
@@ -77,20 +77,20 @@ export default function Home() {
 
                 <div className='my-4'>
                   {
-                    field.question_type == 'short_answer' && <input type="text" className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
+                    field.question_type == 'short_answer' && <input type="text" className="px-5 shadow-sm text-black h-10 rounded-md block w-full" placeholder={field.label} />
                   }
                   {
-                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
+                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 text-black rounded-md block w-full" placeholder={field.label} />
                   }
                   {field.question_type == 'multichoice' &&
-                    <div className='my-4 flex flex-col space-y-2'>
-                      <select
-                        className='px-5 shadow-sm h-10 rounded-md block w-full'>
+                    <div className='my-4 flex flex-col text-black space-y-2'>
+                      <select style="color:black"
+                        className='px-5 shadow-sm h-10 text-black rounded-md block w-full'>
                         {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
                       </select>
-                      <div className='flex space-between'>
-                        <input type="text" onChange={(e) => setTextField(e.target.value)} value={textField} placeholder="Add an option" className='flex-1' />
-                        <button className='bg-indigo-700 block hover:bg-indigo-900 text-white px-4' onClick={() => addFieldOption(field.name, textField) }>Add</button>
+                      <div className='flex text-black space-between'>
+                        <input type="text" onChange={(e) => setTextField(e.target.value)} value={textField} placeholder="Add an option" className='flex-1 text-black' />
+                        <button className='bg-indigo-700 block hover:bg-indigo-900 text-black px-4' onClick={() => addFieldOption(field.name, textField) }>Add</button>
                       </div>
                     </div>
                   }
