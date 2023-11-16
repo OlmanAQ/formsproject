@@ -5,6 +5,10 @@ export default function Home() {
   const [onEdit, setOnEdit] = useState(false);
   const [textField, setTextField] = useState("");
   const [editedField, setEditedField] = useState("");
+  let id = 0;
+  let objects = [];
+  let preguntas = [];
+
 
   const addQuestion = () => {
     const field = {
@@ -15,8 +19,42 @@ export default function Home() {
     }
     setFormContent([...formContent, field]);
   }
-  const crearDepartamento = async (form) => {
+
+  //funcion para crear el objecto de preguntas
+  const crearPregunta = () => {
+    let id = 0;
+
+    formContent.forEach(field => {
+      let pregunta = {};
+      pregunta.id = id;
+      pregunta.tipo = field.question_type;
+      pregunta.nombre = field.label;
+      if (field.question_type === 'multichoice') {
+        pregunta.opciones = field.list;
+      }
+      preguntas.push(pregunta);
+      id++;
+    });
+    console.log(preguntas);
+
+    return preguntas;
+  }
+  const crearPreguntas = async (form) => {
     try {
+      let id = 0;
+      formContent.forEach(field => {
+        let pregunta = {};
+        pregunta.id = id;
+        pregunta.tipo = field.question_type;
+        pregunta.nombre = field.label;
+        if (field.question_type === 'multichoice') {
+          pregunta.opciones = field.list;
+        }
+        preguntas.push(pregunta);
+        id++;
+      });
+      console.log(preguntas);
+  
       console.log(db);
       console.log(form);
       await addDoc(collection(db, "Respuestas"), {
@@ -93,7 +131,8 @@ export default function Home() {
                   {
                     field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 text-black rounded-md block w-full" placeholder={field.label} />
                   }
-                  {field.question_type == 'multichoice' &&
+                  {
+                    field.question_type == 'multichoice' &&
                     <div className='my-4 flex flex-col text-black space-y-2'>
                       <select 
                         className='px-5 shadow-sm h-10 text-black rounded-md block w-full'>
@@ -115,7 +154,7 @@ export default function Home() {
         <div className='relative w-full p-5'>
           <div className='absolute inset-x-0 bottom-0 h-12 flex justify-center'>
             <button onClick={() => addQuestion()} className='inline-flex bg-gray-800 hover:bg-gray-700 items-center p-3 text-sm text-white rounded-md'>Add Question</button>
-            <button onClick={() =>crearDepartamento()} className='inline-flex bg-gray-800 hover:bg-gray-700 items-center p-3 text-sm text-white rounded-md'>Terminar</button>
+            <button onClick={() =>crearPregunta()} className='inline-flex bg-gray-800 hover:bg-gray-700 items-center p-3 text-sm text-white rounded-md'>Terminar</button>
           </div>
         </div>
       </div>
@@ -134,23 +173,6 @@ export default function Home() {
                   </div>
                  
                 </div>
-
-                <div className='my-4'>
-                  {
-                    field.question_type == 'short_answer' && <input type="text" className="px-5 text-black shadow-sm h-10 rounded-md block w-full" placeholder={field.label} />
-                  }
-                  {
-                    field.question_type == 'paragraph' && <textarea rows={4} className="px-5 shadow-sm h-10 text-black  rounded-md block w-full" placeholder={field.label} />
-                  }
-                  {
-                    field.question_type == 'multichoice' &&
-                    <select
-                      className='px-5 shadow-sm h-10 rounded-md text-black block w-full'>
-                      {field.list.map((item) => <option key={item} value={item}>{item}</option>)}
-                    </select>
-                  }
-                </div>
-
               </div>
             )
           })
